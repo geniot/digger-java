@@ -404,32 +404,32 @@ class Main {
 	}
 
 	void testpause() {
-		if (dig.Input.akeypressed == 32) { /* Space bar */
-			dig.Input.akeypressed = 0;
-			dig.Sound.soundpause();
-			dig.Sound.sett2val(40);
-			dig.Sound.setsoundt2();
-			cleartopline();
-			dig.Drawing.outtext("PRESS ANY KEY", 80, 0, 1);
-			dig.newframe();
-			dig.Input.keypressed = 0;
-			while (true) {
-				try {
-					Thread.sleep(50);
-				} catch (Exception e) {
-				}
-				if (dig.Input.keypressed != 0)
-					break;
-			}
-			cleartopline();
-			dig.Scores.drawscores();
-			dig.Scores.addscore(0);
-			dig.Drawing.drawlives();
-			dig.newframe();
-			dig.time = dig.Pc.gethrt() - dig.frametime;
-//	olddelay(200);
-			dig.Input.keypressed = 0;
-		} else
-			dig.Sound.soundpauseoff();
+//		if (dig.Input.akeypressed == 80) { /* p */
+//			dig.Input.akeypressed = 0;
+//			dig.Sound.soundpause();
+//			dig.Sound.sett2val(40);
+//			dig.Sound.setsoundt2();
+//			cleartopline();
+//			dig.Drawing.outtext("PRESS ANY KEY", 80, 0, 1);
+//			dig.newframe();
+//			dig.Input.keypressed = 0;
+//			while (true) {
+//				try {
+//					Thread.sleep(50);
+//				} catch (Exception e) {
+//				}
+//				if (dig.Input.keypressed != 0)
+//					break;
+//			}
+//			cleartopline();
+//			dig.Scores.drawscores();
+//			dig.Scores.addscore(0);
+//			dig.Drawing.drawlives();
+//			dig.newframe();
+//			dig.time = dig.Pc.gethrt() - dig.frametime;
+////	olddelay(200);
+//			dig.Input.keypressed = 0;
+//		} else
+//			dig.Sound.soundpauseoff();
 	}
 }

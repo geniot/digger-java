@@ -131,6 +131,7 @@ void Key_upreleased () {
 }
 void processkey (int key) {
   keypressed=key;
+//  System.out.println(key);
 	if (key>0x80)
 		akeypressed = key&0x7f;
   switch (key) {
@@ -142,8 +143,10 @@ void processkey (int key) {
 	case 0xc8: Key_upreleased(); break;
 	case 0x50: Key_downpressed(); break;
 	case 0xd0: Key_downreleased(); break;
-	case 0x3b: Key_f1pressed(); break;
-	case 0xbb: Key_f1released(); break;
+//	case 0x3b: Key_f1pressed(); break;
+//	case 0xbb: Key_f1released(); break;
+	case 32: Key_f1pressed(); break;
+    case 160: Key_f1released();break;
 	case 0x78: f10pressed=true; break;
 	case 0xf8: f10pressed=false; break;
 	case 0x2b: pluspressed=true; break;
