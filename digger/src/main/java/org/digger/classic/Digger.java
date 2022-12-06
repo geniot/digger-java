@@ -12,7 +12,7 @@ public class Digger extends AppletCompat implements Runnable {
 
     static int MAX_RATE = 200, MIN_RATE = 40;
 
-    int width = 320, height = 200, frametime = 66;
+    int width = 320, height = 200, frametime = 80;
     Thread gamethread;
 
     String subaddr;
@@ -23,7 +23,7 @@ public class Digger extends AppletCompat implements Runnable {
     Bags Bags;
     Main Main;
     Sound Sound;
-    NewSound newSound;
+//    NewSound newSound;
     Monster Monster;
     Scores Scores;
     Sprite Sprite;
@@ -56,7 +56,7 @@ public class Digger extends AppletCompat implements Runnable {
         Bags = new Bags(this);
         Main = new Main(this);
         Sound = new Sound(this);
-        newSound = new NewSound();
+//        newSound = new NewSound();
         Monster = new Monster(this);
         Scores = new Scores(this);
         Sprite = new Sprite(this);
@@ -178,7 +178,7 @@ public class Digger extends AppletCompat implements Runnable {
                 diggerdie();
         if (bonusmode && digonscr) {
             // Can be redundent...
-            newSound.stopNormalBackgroundMusic();
+//            newSound.stopNormalBackgroundMusic();
 
             if (bonustimeleft != 0) {
                 bonustimeleft--;
@@ -187,36 +187,36 @@ public class Digger extends AppletCompat implements Runnable {
                     if ((bonustimeleft & 1) != 0) {
                         Pc.ginten(0);
                         Sound.soundbonus();
-                        newSound.stopBonusBackgroundMusic();
-                        newSound.startBonusPulse();
+//                        newSound.stopBonusBackgroundMusic();
+//                        newSound.startBonusPulse();
                     } else {
-                        newSound.stopBonusBackgroundMusic();
-                        newSound.startBonusPulse();
+//                        newSound.stopBonusBackgroundMusic();
+//                        newSound.startBonusPulse();
                         Pc.ginten(1);
                         Sound.soundbonus();
                     }
                     if (startbonustimeleft == 0) {
-                        newSound.endBonusPulse();
+//                        newSound.endBonusPulse();
                         Sound.music(0);
                         Sound.soundbonusoff();
                         Pc.ginten(1);
-                        newSound.startBonusBackgroundMusic();
+//                        newSound.startBonusBackgroundMusic();
                     }
                 }
             } else {
                 endbonusmode();
                 Sound.soundbonusoff();
                 Sound.music(1);
-                newSound.endBonusPulse();
-                newSound.stopBonusBackgroundMusic();
-                newSound.startNormalBackgroundMusic();
+//                newSound.endBonusPulse();
+//                newSound.stopBonusBackgroundMusic();
+//                newSound.startNormalBackgroundMusic();
             }
         }
         if (bonusmode && !digonscr) {
             endbonusmode();
-            newSound.endBonusPulse();
-            newSound.stopBonusBackgroundMusic();
-            newSound.startNormalBackgroundMusic();
+//            newSound.endBonusPulse();
+//            newSound.stopBonusBackgroundMusic();
+//            newSound.startNormalBackgroundMusic();
             Sound.soundbonusoff();
             Sound.music(1);
         }
@@ -236,9 +236,9 @@ public class Digger extends AppletCompat implements Runnable {
     void drawexplosion() {
         switch (expsn) {
             case 1:
-                newSound.fireEnd();
+//                newSound.fireEnd();
                 Sound.soundexplode();
-                newSound.playExplode();
+//                newSound.playExplode();
             case 2:
             case 3:
                 Drawing.drawfire(firex, firey, expsn);
@@ -446,9 +446,9 @@ public class Digger extends AppletCompat implements Runnable {
 
     void killdigger(int stage, int bag) {
         if (deathstage < 2 || deathstage > 4) {
-            newSound.stopNormalBackgroundMusic();
-            newSound.stopBonusBackgroundMusic();
-            newSound.playDeath();
+//            newSound.stopNormalBackgroundMusic();
+//            newSound.stopBonusBackgroundMusic();
+//            newSound.playDeath();
             digonscr = false;
             deathstage = stage;
             deathbag = bag;
@@ -467,7 +467,7 @@ public class Digger extends AppletCompat implements Runnable {
             notfiring = true;
             Sprite.erasespr(15);
             Sound.soundfireoff();
-            newSound.fireEnd();
+//            newSound.fireEnd();
         }
     }
 
@@ -579,7 +579,7 @@ public class Digger extends AppletCompat implements Runnable {
             Scores.scoreemerald();
             Sound.soundem();
             Sound.soundemerald(emocttime);
-            newSound.playEatEmerald(emocttime <= 0);
+//            newSound.playEatEmerald(emocttime <= 0);
             emocttime = 9;
         }
         clbits = Drawing.drawdigger(digdir, diggerx, diggery, notfiring && rechargetime == 0);
@@ -602,7 +602,7 @@ public class Digger extends AppletCompat implements Runnable {
             for (nmon = Monster.killmonsters(clbits); nmon != 0; nmon--) {
                 Sound.soundeatm();
                 Scores.scoreeatm();
-                newSound.playMonsterEat();
+//                newSound.playMonsterEat();
             }
         if ((clbits & 0x4000) != 0) {
             Scores.scorebonus();
@@ -643,7 +643,7 @@ public class Digger extends AppletCompat implements Runnable {
                     firedir = digdir;
                     Sprite.movedrawspr(15, firex, firey);
                     Sound.soundfire();
-                    newSound.fireStart();
+//                    newSound.fireStart();
                 }
         } else {
             switch (firedir) {

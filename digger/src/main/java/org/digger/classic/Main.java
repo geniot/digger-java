@@ -154,7 +154,7 @@ class Main {
 		nplayers = 1;
 		do {
 			dig.Sound.soundstop();
-			dig.newSound.killAll();
+//			dig.newSound.killAll();
 			dig.Sprite.setsprorder(digsprorder);
 			dig.Drawing.creatembspr();
 			dig.Input.detectjoy();
@@ -269,7 +269,7 @@ class Main {
 				}
 			}
 			dig.Input.escape = false;
-			dig.newSound.killAll();
+//			dig.newSound.killAll();
 		} while (!false); // dig.Input.escape);
 		/*
 		 * dig.Sound.soundoff(); restoreint8(); restorekeyb(); graphicsoff();
@@ -313,7 +313,7 @@ class Main {
 		dig.Scores.initscores();
 		dig.Drawing.drawlives();
 		dig.Sound.music(1);
-		dig.newSound.startNormalBackgroundMusic();
+//		dig.newSound.startNormalBackgroundMusic();
 		dig.Input.readdir();
 		dig.time = dig.Pc.gethrt();
 		while (!gamedat[curplayer].dead && !gamedat[curplayer].levdone && !dig.Input.escape) {
@@ -346,7 +346,7 @@ class Main {
 				t = 0;
 		}
 		dig.Sound.soundstop();
-		dig.newSound.killAll();
+//		dig.newSound.killAll();
 		dig.killfire();
 		dig.erasebonus();
 		dig.Bags.cleanupbags();
@@ -356,7 +356,7 @@ class Main {
 		if (gamedat[curplayer].levdone)
 			try {
 				dig.Sound.soundlevdone();
-				dig.newSound.playNewLevel(); // Let the player prepare with one more second
+//				dig.newSound.playNewLevel(); // Let the player prepare with one more second
 				Thread.sleep(1000); // Let the player prepare with one more second
 			} catch (InterruptedException ex) {
 			}
