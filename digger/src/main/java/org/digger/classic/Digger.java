@@ -3,54 +3,45 @@ package org.digger.classic;
 /* WARNING! This code is ugly and highly non-object-oriented.
 It was ported from C almost mechanically! */
 
-import java.applet.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.image.*;
+import java.awt.image.IndexColorModel;
+import java.awt.image.MemoryImageSource;
 
 public class Digger extends AppletCompat implements Runnable {
 
+    public static final int PADDING = 20;
     static int MAX_RATE = 200, MIN_RATE = 40;
-
     int width = 320, height = 200, frametime = 80;
     Thread gamethread;
-
     String subaddr;
-
     Image pic;
     Graphics picg;
-
     Bags Bags;
     Main Main;
     Sound Sound;
-//    NewSound newSound;
+    //    NewSound newSound;
     Monster Monster;
     Scores Scores;
     Sprite Sprite;
     Drawing Drawing;
     Input Input;
-    Pc Pc;
 
 // -----
-
+    Pc Pc;
     int diggerx = 0, diggery = 0, diggerh = 0, diggerv = 0, diggerrx = 0, diggerry = 0, digmdir = 0, digdir = 0,
             digtime = 0, rechargetime = 0, firex = 0, firey = 0, firedir = 0, expsn = 0, deathstage = 0, deathbag = 0,
             deathani = 0, deathtime = 0, startbonustimeleft = 0, bonustimeleft = 0, eatmsc = 0, emocttime = 0;
-
     int emmask = 0;
-
-    byte emfield[] = { // [150]
+    byte[] emfield = { // [150]
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0};
-
     boolean digonscr = false, notfiring = false, bonusvisible = false, bonusmode = false, diggervisible = false;
-
     long time, ftime = 50;
-    int embox[] = {8, 12, 12, 9, 16, 12, 6, 9}; // [8]
-    int deatharc[] = {3, 5, 6, 6, 5, 3, 0}; // [7]
+    int[] embox = {8, 12, 12, 9, 16, 12, 6, 9}; // [8]
+    int[] deatharc = {3, 5, 6, 6, 5, 3, 0}; // [7]
 
     public Digger() {
         Bags = new Bags(this);
@@ -68,8 +59,7 @@ public class Digger extends AppletCompat implements Runnable {
     boolean checkdiggerunderbag(int h, int v) {
         if (digmdir == 2 || digmdir == 6)
             if ((diggerx - 12) / 20 == h)
-                if ((diggery - 18) / 18 == v || (diggery - 18) / 18 + 1 == v)
-                    return true;
+                return (diggery - 18) / 18 == v || (diggery - 18) / 18 + 1 == v;
         return false;
     }
 
@@ -520,8 +510,6 @@ public class Digger extends AppletCompat implements Runnable {
     public void start() {
         requestFocus();
     }
-
-    public static final int PADDING = 20;
 
     public void update(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;

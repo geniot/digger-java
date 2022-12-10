@@ -1,229 +1,227 @@
 package org.digger.classic;
 
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.MemoryImageSource;
 
 class Pc {
 
-	Digger dig;
+    Digger dig;
 
-	Image[] image = new Image[2];
-	Image currentImage;
+    Image[] image = new Image[2];
+    Image currentImage;
 
-	MemoryImageSource[] source = new MemoryImageSource[2];
-	MemoryImageSource currentSource;
+    MemoryImageSource[] source = new MemoryImageSource[2];
+    MemoryImageSource currentSource;
+    int[] pixels;    int width = 320, height = 200, size = width * height;
+    byte[][][] pal = {
 
-	int width = 320, height = 200, size = width * height;
+            {{0, (byte) 0x00, (byte) 0xAA, (byte) 0xAA}, {0, (byte) 0xAA, (byte) 0x00, (byte) 0x54},
+                    {0, (byte) 0x00, (byte) 0x00, (byte) 0x00}},
 
-	int[] pixels;
+            {{0, (byte) 0x54, (byte) 0xFF, (byte) 0xFF}, {0, (byte) 0xFF, (byte) 0x54, (byte) 0xFF},
+                    {0, (byte) 0x54, (byte) 0x54, (byte) 0x54}}};
 
-	byte[][][] pal = {
+    Pc(Digger d) {
+        dig = d;
+    }
 
-			{ { 0, (byte) 0x00, (byte) 0xAA, (byte) 0xAA }, { 0, (byte) 0xAA, (byte) 0x00, (byte) 0x54 },
-					{ 0, (byte) 0x00, (byte) 0x00, (byte) 0x00 } },
+    void gclear() {
+        for (int i = 0; i < size; i++)
+            pixels[i] = 0;
+        currentSource.newPixels();
+    }
 
-			{ { 0, (byte) 0x54, (byte) 0xFF, (byte) 0xFF }, { 0, (byte) 0xFF, (byte) 0x54, (byte) 0xFF },
-					{ 0, (byte) 0x54, (byte) 0x54, (byte) 0x54 } } };
+    long gethrt() {
+        return System.currentTimeMillis();
+    }
 
-	Pc(Digger d) {
-		dig = d;
-	}
+    int getkips() {
+        return 0; // phony
+    }
 
-	void gclear() {
-		for (int i = 0; i < size; i++)
-			pixels[i] = 0;
-		currentSource.newPixels();
-	}
+    void ggeti(int x, int y, short[] p, int w, int h) {
 
-	long gethrt() {
-		return System.currentTimeMillis();
-	}
+        int src = 0;
+        int dest = y * width + (x & 0xfffc);
 
-	int getkips() {
-		return 0; // phony
-	}
+        for (int i = 0; i < h; i++) {
+            int d = dest;
+            for (int j = 0; j < w; j++) {
+                p[src++] = (short) ((((((pixels[d] << 2) | pixels[d + 1]) << 2) | pixels[d + 2]) << 2) | pixels[d + 3]);
+                d += 4;
+                if (src == p.length)
+                    return;
+            }
+            dest += width;
+        }
 
-	void ggeti(int x, int y, short[] p, int w, int h) {
+    }
 
-		int src = 0;
-		int dest = y * width + (x & 0xfffc);
+    int ggetpix(int x, int y) {
+        int ofs = width * y + x & 0xfffc;
+        return (((((pixels[ofs] << 2) | pixels[ofs + 1]) << 2) | pixels[ofs + 2]) << 2) | pixels[ofs + 3];
+    }
 
-		for (int i = 0; i < h; i++) {
-			int d = dest;
-			for (int j = 0; j < w; j++) {
-				p[src++] = (short) ((((((pixels[d] << 2) | pixels[d + 1]) << 2) | pixels[d + 2]) << 2) | pixels[d + 3]);
-				d += 4;
-				if (src == p.length)
-					return;
-			}
-			dest += width;
-		}
+    void ginit() {
+    }
 
-	}
+    void ginten(int inten) {
+        // TODO switchPallete !
+        currentSource = source[inten & 1];
+        currentImage = image[inten & 1];
+        currentSource.newPixels();
+    }
 
-	int ggetpix(int x, int y) {
-		int ofs = width * y + x & 0xfffc;
-		return (((((pixels[ofs] << 2) | pixels[ofs + 1]) << 2) | pixels[ofs + 2]) << 2) | pixels[ofs + 3];
-	}
+    void gpal(int pal) {
+    }
 
-	void ginit() {
-	}
+    void gputi(int x, int y, short[] p, int w, int h) {
+        gputi(x, y, p, w, h, true);
+    }
 
-	void ginten(int inten) {
-		// TODO switchPallete !
-		currentSource = source[inten & 1];
-		currentImage = image[inten & 1];
-		currentSource.newPixels();
-	}
+    void gputi(int x, int y, short[] p, int w, int h, boolean b) {
 
-	void gpal(int pal) {
-	}
+        int src = 0;
+        int dest = y * width + (x & 0xfffc);
 
-	void gputi(int x, int y, short[] p, int w, int h) {
-		gputi(x, y, p, w, h, true);
-	}
+        for (int i = 0; i < h; i++) {
+            int d = dest;
+            for (int j = 0; j < w; j++) {
+                short px = p[src++];
+                pixels[d + 3] = px & 3;
+                px >>= 2;
+                pixels[d + 2] = px & 3;
+                px >>= 2;
+                pixels[d + 1] = px & 3;
+                px >>= 2;
+                pixels[d] = px & 3;
+                d += 4;
+                if (src == p.length)
+                    return;
+            }
+            dest += width;
+        }
 
-	void gputi(int x, int y, short[] p, int w, int h, boolean b) {
+    }
 
-		int src = 0;
-		int dest = y * width + (x & 0xfffc);
+    void gputim(int x, int y, int ch, int w, int h) {
 
-		for (int i = 0; i < h; i++) {
-			int d = dest;
-			for (int j = 0; j < w; j++) {
-				short px = p[src++];
-				pixels[d + 3] = px & 3;
-				px >>= 2;
-				pixels[d + 2] = px & 3;
-				px >>= 2;
-				pixels[d + 1] = px & 3;
-				px >>= 2;
-				pixels[d] = px & 3;
-				d += 4;
-				if (src == p.length)
-					return;
-			}
-			dest += width;
-		}
+        short[] spr = cgagrafx.cgatable[ch * 2];
+        short[] msk = cgagrafx.cgatable[ch * 2 + 1];
 
-	}
+        int src = 0;
+        int dest = y * width + (x & 0xfffc);
 
-	void gputim(int x, int y, int ch, int w, int h) {
+        for (int i = 0; i < h; i++) {
+            int d = dest;
+            for (int j = 0; j < w; j++) {
+                short px = spr[src];
+                short mx = msk[src];
+                src++;
+                if ((mx & 3) == 0)
+                    pixels[d + 3] = px & 3;
+                px >>= 2;
+                if ((mx & (3 << 2)) == 0)
+                    pixels[d + 2] = px & 3;
+                px >>= 2;
+                if ((mx & (3 << 4)) == 0)
+                    pixels[d + 1] = px & 3;
+                px >>= 2;
+                if ((mx & (3 << 6)) == 0)
+                    pixels[d] = px & 3;
+                d += 4;
+                if (src == spr.length || src == msk.length) {
+                    return;
+                }
+            }
+            dest += width;
+        }
 
-		short[] spr = cgagrafx.cgatable[ch * 2];
-		short[] msk = cgagrafx.cgatable[ch * 2 + 1];
+    }
 
-		int src = 0;
-		int dest = y * width + (x & 0xfffc);
+    void gtitle() {
 
-		for (int i = 0; i < h; i++) {
-			int d = dest;
-			for (int j = 0; j < w; j++) {
-				short px = spr[src];
-				short mx = msk[src];
-				src++;
-				if ((mx & 3) == 0)
-					pixels[d + 3] = px & 3;
-				px >>= 2;
-				if ((mx & (3 << 2)) == 0)
-					pixels[d + 2] = px & 3;
-				px >>= 2;
-				if ((mx & (3 << 4)) == 0)
-					pixels[d + 1] = px & 3;
-				px >>= 2;
-				if ((mx & (3 << 6)) == 0)
-					pixels[d] = px & 3;
-				d += 4;
-				if (src == spr.length || src == msk.length) {
-					return;
-				}
-			}
-			dest += width;
-		}
+        int src = 0, dest = 0, plus = 0;
 
-	}
+        while (true) {
 
-	void gtitle() {
+            if (src >= cgagrafx.cgatitledat.length)
+                break;
 
-		int src = 0, dest = 0, plus = 0;
+            int b = cgagrafx.cgatitledat[src++], l, c;
 
-		while (true) {
+            if (b == 0xfe) {
+                l = cgagrafx.cgatitledat[src++];
+                if (l == 0)
+                    l = 256;
+                c = cgagrafx.cgatitledat[src++];
+            } else {
+                l = 1;
+                c = b;
+            }
 
-			if (src >= cgagrafx.cgatitledat.length)
-				break;
+            for (int i = 0; i < l; i++) {
+                int px = c, adst = 0;
+                if (dest < 32768)
+                    adst = (dest / 320) * 640 + dest % 320;
+                else
+                    adst = 320 + ((dest - 32768) / 320) * 640 + (dest - 32768) % 320;
+                pixels[adst + 3] = px & 3;
+                px >>= 2;
+                pixels[adst + 2] = px & 3;
+                px >>= 2;
+                pixels[adst + 1] = px & 3;
+                px >>= 2;
+                pixels[adst] = px & 3;
+                dest += 4;
+                if (dest >= 65535)
+                    break;
+            }
 
-			int b = cgagrafx.cgatitledat[src++], l, c;
+            if (dest >= 65535)
+                break;
 
-			if (b == 0xfe) {
-				l = cgagrafx.cgatitledat[src++];
-				if (l == 0)
-					l = 256;
-				c = cgagrafx.cgatitledat[src++];
-			} else {
-				l = 1;
-				c = b;
-			}
+        }
 
-			for (int i = 0; i < l; i++) {
-				int px = c, adst = 0;
-				if (dest < 32768)
-					adst = (dest / 320) * 640 + dest % 320;
-				else
-					adst = 320 + ((dest - 32768) / 320) * 640 + (dest - 32768) % 320;
-				pixels[adst + 3] = px & 3;
-				px >>= 2;
-				pixels[adst + 2] = px & 3;
-				px >>= 2;
-				pixels[adst + 1] = px & 3;
-				px >>= 2;
-				pixels[adst + 0] = px & 3;
-				dest += 4;
-				if (dest >= 65535)
-					break;
-			}
+    }
 
-			if (dest >= 65535)
-				break;
+    void gwrite(int x, int y, int ch, int c) {
+        gwrite(x, y, ch, c, false);
+    }
 
-		}
+    void gwrite(int x, int y, int ch, int c, boolean upd) {
 
-	}
+        int dest = x + y * width, ofs = 0, color = c & 3;
 
-	void gwrite(int x, int y, int ch, int c) {
-		gwrite(x, y, ch, c, false);
-	}
+        ch -= 32;
+        if ((ch < 0) || (ch > 0x5f))
+            return;
 
-	void gwrite(int x, int y, int ch, int c, boolean upd) {
+        short[] chartab = alpha.ascii2cga[ch];
 
-		int dest = x + y * width, ofs = 0, color = c & 3;
+        if (chartab == null)
+            return;
 
-		ch -= 32;
-		if ((ch < 0) || (ch > 0x5f))
-			return;
+        for (int i = 0; i < 12; i++) {
+            int d = dest;
+            for (int j = 0; j < 3; j++) {
+                int px = chartab[ofs++];
+                pixels[d + 3] = px & color;
+                px >>= 2;
+                pixels[d + 2] = px & color;
+                px >>= 2;
+                pixels[d + 1] = px & color;
+                px >>= 2;
+                pixels[d] = px & color;
+                d += 4;
+            }
+            dest += width;
+        }
 
-		short[] chartab = alpha.ascii2cga[ch];
+        if (upd)
+            currentSource.newPixels(x, y, 12, 12);
 
-		if (chartab == null)
-			return;
+    }
 
-		for (int i = 0; i < 12; i++) {
-			int d = dest;
-			for (int j = 0; j < 3; j++) {
-				int px = chartab[ofs++];
-				pixels[d + 3] = px & color;
-				px >>= 2;
-				pixels[d + 2] = px & color;
-				px >>= 2;
-				pixels[d + 1] = px & color;
-				px >>= 2;
-				pixels[d] = px & color;
-				d += 4;
-			}
-			dest += width;
-		}
 
-		if (upd)
-			currentSource.newPixels(x, y, 12, 12);
-
-	}
 }

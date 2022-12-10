@@ -2,17 +2,17 @@ package org.digger.classic;
 
 public interface SoundPlayer {
 
-	void playSingle();
+    void playSingle();
 
-	void playInLoop();
+    void playInLoop();
 
-	void stopPlaying();
+    void stopPlaying();
 
-	void pausePlaying();
-	
-	boolean isPlaying();
+    void pausePlaying();
 
-	void rewind();
-	
-	void close();
+    boolean isPlaying();
+
+    void rewind();
+
+    void close();
 }

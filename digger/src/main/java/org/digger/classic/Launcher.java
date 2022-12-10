@@ -1,7 +1,6 @@
 package org.digger.classic;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.*;
 
 public class Launcher {
@@ -17,8 +16,8 @@ public class Launcher {
         frame.setTitle("Digger Remastered");
 //		frame.setSize((int) (game.width * 4.03), (int) (game.height * 4.17));
         frame.setSize(
-                (int) (game.width * 2 + Digger.PADDING * 4),
-                (int) (game.height * 2 + Digger.PADDING * 5));
+                game.width * 2 + Digger.PADDING * 4,
+                game.height * 2 + Digger.PADDING * 5);
 //		frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
