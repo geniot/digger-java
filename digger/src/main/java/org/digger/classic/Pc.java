@@ -1,7 +1,12 @@
 package org.digger.classic;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.awt.image.MemoryImageSource;
+import java.io.File;
+import java.io.IOException;
 
 class Pc {
 
@@ -12,7 +17,8 @@ class Pc {
 
     MemoryImageSource[] source = new MemoryImageSource[2];
     MemoryImageSource currentSource;
-    int[] pixels;    int width = 320, height = 200, size = width * height;
+    int[] pixels;
+    int width = 320, height = 200, size = width * height;
     byte[][][] pal = {
 
             {{0, (byte) 0x00, (byte) 0xAA, (byte) 0xAA}, {0, (byte) 0xAA, (byte) 0x00, (byte) 0x54},
@@ -96,12 +102,30 @@ class Pc {
                 px >>= 2;
                 pixels[d] = px & 3;
                 d += 4;
-                if (src == p.length)
+                if (src == p.length) {
                     return;
+                }
             }
             dest += width;
         }
 
+    }
+
+    public static BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage) {
+            return (BufferedImage) img;
+        }
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        // Return the buffered image
+        return bimage;
     }
 
     void gputim(int x, int y, int ch, int w, int h) {
@@ -131,6 +155,25 @@ class Pc {
                     pixels[d] = px & 3;
                 d += 4;
                 if (src == spr.length || src == msk.length) {
+
+                    MemoryImageSource memoryImageSource = new MemoryImageSource(width, height,
+                            new IndexColorModel(8, 4, pal[0][0], pal[0][1], pal[0][2]),
+                            pixels, 0, width);
+                    Image image = Toolkit.getDefaultToolkit().createImage(memoryImageSource);
+                    BufferedImage bufferedImage = toBufferedImage(image);
+                    try {
+                        BufferedImage cropped = bufferedImage.getSubimage(x, y, 30, h);
+                        try {
+                            ImageIO.write(cropped, "png",
+                                    new File("out/" + ch * 2 + ".png"));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (Exception ex) {
+
+                    }
+
+
                     return;
                 }
             }
