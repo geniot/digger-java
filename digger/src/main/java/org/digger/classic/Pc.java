@@ -132,7 +132,7 @@ class Pc {
 
         short[] spr = cgagrafx.cgatable[ch * 2];
         short[] msk = cgagrafx.cgatable[ch * 2 + 1];
-
+        //65532 1111111111111100
         int src = 0;
         int dest = y * width + (x & 0xfffc);
 
