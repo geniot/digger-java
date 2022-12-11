@@ -162,15 +162,17 @@ class Pc {
                     Image image = Toolkit.getDefaultToolkit().createImage(memoryImageSource);
                     BufferedImage bufferedImage = toBufferedImage(image);
                     try {
-                        BufferedImage cropped = bufferedImage.getSubimage(x, y, 30, h);
+                        BufferedImage cropped = bufferedImage.getSubimage(x, y, w * 4, h);
                         try {
-                            ImageIO.write(cropped, "png",
-                                    new File("out/" + ch * 2 + ".png"));
+                            File file = new File("out/" + ch * 2 + ".png");
+                            if (!file.exists()) {
+                                ImageIO.write(cropped, "png", file);
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } catch (Exception ex) {
-
+                        System.out.println(ex.getMessage());
                     }
 
 
