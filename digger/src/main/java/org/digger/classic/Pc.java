@@ -155,27 +155,6 @@ class Pc {
                     pixels[d] = px & 3;
                 d += 4;
                 if (src == spr.length || src == msk.length) {
-
-                    MemoryImageSource memoryImageSource = new MemoryImageSource(width, height,
-                            new IndexColorModel(8, 4, pal[0][0], pal[0][1], pal[0][2]),
-                            pixels, 0, width);
-                    Image image = Toolkit.getDefaultToolkit().createImage(memoryImageSource);
-                    BufferedImage bufferedImage = toBufferedImage(image);
-                    try {
-                        BufferedImage cropped = bufferedImage.getSubimage(x, y, w * 4, h);
-                        try {
-                            File file = new File("out/" + ch * 2 + ".png");
-                            if (!file.exists()) {
-                                ImageIO.write(cropped, "png", file);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (Exception ex) {
-                        System.out.println(ex.getMessage());
-                    }
-
-
                     return;
                 }
             }
