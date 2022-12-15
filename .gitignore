@@ -12,3 +12,5 @@ buildNumber.properties
 /digger/digger.sco
 .vscode
 out
+.idea
+digger.sco

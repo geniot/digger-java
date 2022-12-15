@@ -1,24 +1,26 @@
 package org.digger.classic;
 
+import org.apache.commons.lang3.StringUtils;
+
 class Drawing {
 
     Digger dig;
 
-    int[] field1 = { // [150]
+    short[] field1 = { // [150]
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0};
 
-    int[] field2 = { // [150]
+    short[] field2 = { // [150]
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0};
 
-    int[] field = { // [150]
+    short[] field = { // [150]
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -29,7 +31,7 @@ class Drawing {
             bagbuf4 = new short[480], bagbuf5 = new short[480], bagbuf6 = new short[480], bagbuf7 = new short[480],
             monbuf1 = new short[480], monbuf2 = new short[480], monbuf3 = new short[480], monbuf4 = new short[480],
             monbuf5 = new short[480], monbuf6 = new short[480], bonusbuf = new short[480], firebuf = new short[128];
-
+    //1111111111111110,1111111111111101,1111111111111011 ...1111011111111111
     int[] bitmasks = {0xfffe, 0xfffd, 0xfffb, 0xfff7, 0xffef, 0xffdf, 0xffbf, 0xff7f, 0xfeff, 0xfdff, 0xfbff, 0xf7ff}; // [12]
 
     int[] monspr = {0, 0, 0, 0, 0, 0}; // [6]
@@ -119,11 +121,11 @@ class Drawing {
         int x, y, xp, yp;
         for (x = 0; x < 15; x++)
             for (y = 0; y < 10; y++)
-                if ((field[y * 15 + x] & 0x2000) == 0) {
+                if ((field[y * 15 + x] & 0x2000) == 0) {//0010000000000000
                     xp = x * 20 + 12;
                     yp = y * 18 + 18;
-                    if ((field[y * 15 + x] & 0xfc0) != 0xfc0) {
-                        field[y * 15 + x] &= 0xd03f;
+                    if ((field[y * 15 + x] & 0xfc0) != 0xfc0) {//111111000000
+                        field[y * 15 + x] &= 0xd03f;//1101000000111111
                         drawbottomblob(xp, yp - 15);
                         drawbottomblob(xp, yp - 12);
                         drawbottomblob(xp, yp - 9);
@@ -266,15 +268,19 @@ class Drawing {
     }
 
     void eatfield(int x, int y, int dir) {
-        int h = (x - 12) / 20, xr = ((x - 12) % 20) / 4, v = (y - 18) / 18, yr = ((y - 18) % 18) / 3;
+        int h = (x - 12) / 20;
+        int xr = ((x - 12) % 20) / 4;
+        int v = (y - 18) / 18;
+        int yr = ((y - 18) % 18) / 3;
+//        System.out.println(h + ":" + v + ":" + xr + ":" + yr);
         dig.Main.incpenalty();
         switch (dir) {
             case 0:
                 h++;
                 field[v * 15 + h] &= bitmasks[xr];
-                if ((field[v * 15 + h] & 0x1f) != 0)
+                if ((field[v * 15 + h] & 0x1f) != 0)//00011111
                     break;
-                field[v * 15 + h] &= 0xdfff;
+                field[v * 15 + h] &= 0xdfff;//1101111111111111
                 break;
             case 4:
                 xr--;
@@ -283,9 +289,9 @@ class Drawing {
                     h--;
                 }
                 field[v * 15 + h] &= bitmasks[xr];
-                if ((field[v * 15 + h] & 0x1f) != 0)
+                if ((field[v * 15 + h] & 0x1f) != 0)//00011111
                     break;
-                field[v * 15 + h] &= 0xdfff;
+                field[v * 15 + h] &= 0xdfff;//1101111111111111
                 break;
             case 2:
                 yr--;
@@ -294,17 +300,38 @@ class Drawing {
                     v--;
                 }
                 field[v * 15 + h] &= bitmasks[6 + yr];
-                if ((field[v * 15 + h] & 0xfc0) != 0)
+                if ((field[v * 15 + h] & 0xfc0) != 0)//111111000000
                     break;
-                field[v * 15 + h] &= 0xdfff;
+                field[v * 15 + h] &= 0xdfff;//1101111111111111
                 break;
             case 6:
                 v++;
                 field[v * 15 + h] &= bitmasks[6 + yr];
-                if ((field[v * 15 + h] & 0xfc0) != 0)
+                if ((field[v * 15 + h] & 0xfc0) != 0)//111111000000
                     break;
-                field[v * 15 + h] &= 0xdfff;
+                field[v * 15 + h] &= 0xdfff;//1101111111111111
         }
+//        debugField();
+    }
+
+    void debugField() {
+        for (int y = 0; y < 10; y++) {
+
+//            for (int i = 0; i < 4; i++) {
+            for (int x = 0; x < 15; x++) {
+                String binaryString = Integer.toBinaryString(0xFFFF & field[y * 15 + x]);
+                String padded = StringUtils.rightPad(binaryString, 16, '0');
+//                    padded = StringUtils.reverse(padded);
+//                    System.out.print(padded.substring(i * 4, i * 4 + 4));
+                System.out.print(padded.substring(0, padded.length() - 4));
+                System.out.print("|");
+            }
+            System.out.print("\n");
+//            }
+
+//            System.out.print("\n");
+        }
+        System.out.print("********************************************************************\n");
     }
 
     void eraseemerald(int x, int y) {
@@ -343,12 +370,12 @@ class Drawing {
         int c, x, y;
         for (x = 0; x < 15; x++)
             for (y = 0; y < 10; y++) {
-                field[y * 15 + x] = -1;
+                field[y * 15 + x] = -1;//1111111111111111
                 c = dig.Main.getlevch(x, y, dig.Main.levplan());
                 if (c == 'S' || c == 'V')
-                    field[y * 15 + x] &= 0xd03f;
+                    field[y * 15 + x] &= 0xd03f;//1101 000000 111111
                 if (c == 'S' || c == 'H')
-                    field[y * 15 + x] &= 0xdfe0;
+                    field[y * 15 + x] &= 0xdfe0;//1101 111111 100000
                 if (dig.Main.getcplayer() == 0)
                     field1[y * 15 + x] = field[y * 15 + x];
                 else
